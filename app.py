@@ -352,4 +352,4 @@ def update_prediction_by_id(conn, cursor, id, outcome):
         print("Error al actualizar el registro:", err)
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='127.0.0.1', port=8000)
+    uvicorn.run(app, host='0.0.0.0', port=8000)
