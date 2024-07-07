@@ -1,0 +1,9 @@
+numpy
+scipy
+scikit-learn
+matplotlib
+pandas
+fastapi
+uvicorn
+mysql-connector-python
+gunicorn==19.9.0
