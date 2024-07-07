@@ -43,10 +43,6 @@ def get_information():
             "sucess": False,
             "message": "Error de conexión"
         }
-    return {
-            "sucess": False,
-            "message": conn
-    }
     cursor = conn.cursor()
     # Lista de campos en la tabla Prediction
     fields = [
