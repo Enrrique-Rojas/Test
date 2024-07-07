@@ -23,10 +23,10 @@ from sklearn import svm
 
 # Configurar la conexión a la base de datos
 config = {
-  'user': 'root',
-  'password': 'root',
-  'host': 'localhost',
-  'database': 'PredictionDesertion',
+  'user': 'Enrrique',
+  'password': 'Clave123@',
+  'host': 'Enrrique.mysql.pythonanywhere-services.com',
+  'database': 'Enrrique$PredictionDesertion',
 }
 
 app = FastAPI()
