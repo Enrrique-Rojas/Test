@@ -23,10 +23,10 @@ from sklearn import svm
 
 # Configurar la conexión a la base de datos
 config = {
-  'user': 'Enrrique',
-  'password': 'Clave123@',
-  'host': 'Enrrique.mysql.pythonanywhere-services.com',
-  'database': 'Enrrique$PredictionDesertion',
+  'user': 'freedb_Enrrique',
+  'password': 'MJCfD8mM&H2yvs!',
+  'host': 'sql.freedb.tech:3306',
+  'database': 'freedb_PredectionDesertion',
 }
 
 app = FastAPI()
