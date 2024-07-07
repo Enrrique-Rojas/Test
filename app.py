@@ -4,7 +4,6 @@ Created on April 27 2024
 @authors: E. ROJAS - K. QUISPE 
 """
 
-import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from Student import Student
@@ -350,6 +349,3 @@ def update_prediction_by_id(conn, cursor, id, outcome):
         print(f"Registro con id {id} actualizado exitosamente")
     except mysql.connector.Error as err:
         print("Error al actualizar el registro:", err)
-
-if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
