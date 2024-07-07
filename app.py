@@ -33,11 +33,20 @@ app = FastAPI()
 
 @app.post('/information')
 def get_information():
+
     try:
         conn = mysql.connector.connect(**config)
         print("Conexión exitosa a MySQL")
     except mysql.connector.Error as err:
         print("Error de conexión:", err)
+        return {
+            "sucess": False,
+            "message": "Error de conexión"
+        }
+    return {
+            "sucess": False,
+            "message": conn
+    }
     cursor = conn.cursor()
     # Lista de campos en la tabla Prediction
     fields = [

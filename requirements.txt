@@ -7,3 +7,4 @@ fastapi
 uvicorn
 mysql-connector-python
 gunicorn==19.9.0
+httptools
