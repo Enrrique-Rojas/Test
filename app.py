@@ -25,7 +25,7 @@ from sklearn import svm
 config = {
   'user': 'freedb_Enrrique',
   'password': 'MJCfD8mM&H2yvs!',
-  'host': 'sql.freedb.tech:3306',
+  'host': 'sql.freedb.tech',
   'database': 'freedb_PredectionDesertion',
 }
 
