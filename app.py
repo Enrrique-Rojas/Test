@@ -297,10 +297,16 @@ def predict_dropout():
     responseStudents = []
     for i, prediction in enumerate(predictions):
         students[i].append(int(prediction))
+        repeatedCoursesStudent=data[i][11]
+        languageLevelStudent=data[i][12]
+        computingLevelStudent = data[i][13]
+        if repeatedCoursesStudent > 2 and languageLevelStudent == 1 and computingLevelStudent == 1:
+            prediction = 1
         studentPrediction = {
             "name":data[i][1],
             "prediction": int(prediction),
         }
+
         responseStudents.append(studentPrediction)
         update_prediction_by_id(conn, cursor, data[i][0], prediction)
        
