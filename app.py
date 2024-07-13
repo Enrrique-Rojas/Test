@@ -124,6 +124,8 @@ def index():
     X_train,X_test,y_train,y_test=train_test_split(X_scaled,y,test_size=0.3,random_state=0)
 
     classifiers_score = {}
+    classifiers_recall = {}
+    classifiers_f1 = {}
     ### Implement Classifier SVC
     classifier=svm.SVC(kernel='linear')
     classifier.fit(X_train,y_train)
@@ -131,7 +133,13 @@ def index():
     score_train=accuracy_score(y_pred_train ,y_train)
     y_pred_test=classifier.predict(X_test)
     score_test=accuracy_score(y_pred_test,y_test)
-    classifiers_score['SVC'] = score_train
+    classifier_name = 'SVC'
+    classifiers_score[classifier_name] = score_train
+    ### Metrics
+    recall = recall_score(y_train, y_pred_train)
+    f1 = f1_score(y_train, y_pred_train)
+    classifiers_recall[classifier_name] = recall
+    classifiers_f1[classifier_name] = f1
 
     ### Implement Classifier KNeighborsClassifier
     classifier= KNeighborsClassifier()
@@ -140,7 +148,13 @@ def index():
     score_train=accuracy_score(y_pred_train ,y_train)
     y_pred_test=classifier.predict(X_test)
     score_test=accuracy_score(y_pred_test,y_test)
-    classifiers_score['KNeighborsClassifier'] = score_train
+    classifier_name = 'KNeighborsClassifier'
+    classifiers_score[classifier_name] = score_train
+    ### Metrics
+    recall = recall_score(y_train, y_pred_train)
+    f1 = f1_score(y_train, y_pred_train)
+    classifiers_recall[classifier_name] = recall
+    classifiers_f1[classifier_name] = f1
 
     ### Implement Classifier LogisticRegression
     classifier=LogisticRegression()
@@ -149,7 +163,13 @@ def index():
     score_train=accuracy_score(y_pred_train ,y_train)
     y_pred_test=classifier.predict(X_test)
     score_test=accuracy_score(y_pred_test,y_test)
-    classifiers_score['LogisticRegression'] = score_train
+    classifier_name = 'LogisticRegression'
+    classifiers_score[classifier_name] = score_train
+    ### Metrics
+    recall = recall_score(y_train, y_pred_train)
+    f1 = f1_score(y_train, y_pred_train)
+    classifiers_recall[classifier_name] = recall
+    classifiers_f1[classifier_name] = f1
 
     ### Implement Classifier RandomForestClassifier
     classifier=RandomForestClassifier()
@@ -158,7 +178,13 @@ def index():
     score_train=accuracy_score(y_pred_train ,y_train)
     y_pred_test=classifier.predict(X_test)
     score_test=accuracy_score(y_pred_test,y_test)
-    classifiers_score['RandomForestClassifier'] = score_train
+    classifier_name = 'RandomForestClassifier'
+    classifiers_score[classifier_name] = score_train
+    ### Metrics
+    recall = recall_score(y_train, y_pred_train)
+    f1 = f1_score(y_train, y_pred_train)
+    classifiers_recall[classifier_name] = recall
+    classifiers_f1[classifier_name] = f1
 
     ### Implement Classifier DecisionTreeClassifier
     classifier= DecisionTreeClassifier()
@@ -167,6 +193,8 @@ def index():
     score_train=accuracy_score(y_pred_train ,y_train)
     y_pred_test=classifier.predict(X_test)
     score_test=accuracy_score(y_pred_test,y_test)
+    classifier_name = 'DecisionTreeClassifier'
+    classifiers_score[classifier_name] = score_train
 
     #Metrics
     matriz = confusion_matrix(y_train, y_pred_train )
@@ -174,6 +202,8 @@ def index():
     recall = recall_score(y_train, y_pred_train)
     f1 = f1_score(y_train, y_pred_train)
     auc = roc_auc_score(y_train, y_pred_train)
+    classifiers_recall[classifier_name] = recall
+    classifiers_f1[classifier_name] = f1
 
     '''### Create a Pickle file using serialization 
     pickle_out = open("classifier.pkl","wb")
@@ -186,6 +216,8 @@ def index():
         'f1': f1,
         'score_train': score_train, 
         'classifiers_score': classifiers_score,
+        'classifiers_recall': classifiers_recall,
+        'classifiers_f1': classifiers_f1,
         'auc': auc
         })
 
