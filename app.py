@@ -171,21 +171,6 @@ def index():
     classifiers_recall[classifier_name] = recall
     classifiers_f1[classifier_name] = f1
 
-    ### Implement Classifier RandomForestClassifier
-    classifier=RandomForestClassifier()
-    classifier.fit(X_train,y_train)
-    y_pred_train =classifier.predict(X_train)
-    score_train=accuracy_score(y_pred_train ,y_train)
-    y_pred_test=classifier.predict(X_test)
-    score_test=accuracy_score(y_pred_test,y_test)
-    classifier_name = 'RandomForestClassifier'
-    classifiers_score[classifier_name] = score_train
-    ### Metrics
-    recall = recall_score(y_train, y_pred_train)
-    f1 = f1_score(y_train, y_pred_train)
-    classifiers_recall[classifier_name] = recall
-    classifiers_f1[classifier_name] = f1
-
     ### Implement Classifier DecisionTreeClassifier
     classifier= DecisionTreeClassifier()
     classifier.fit(X_train,y_train)
@@ -195,7 +180,21 @@ def index():
     score_test=accuracy_score(y_pred_test,y_test)
     classifier_name = 'DecisionTreeClassifier'
     classifiers_score[classifier_name] = score_train
+    ### Metrics
+    recall = recall_score(y_train, y_pred_train)
+    f1 = f1_score(y_train, y_pred_train)
+    classifiers_recall[classifier_name] = recall
+    classifiers_f1[classifier_name] = f1
 
+    ### Implement Classifier RandomForestClassifier
+    classifier=RandomForestClassifier()
+    classifier.fit(X_train,y_train)
+    y_pred_train =classifier.predict(X_train)
+    score_train=accuracy_score(y_pred_train ,y_train)
+    y_pred_test=classifier.predict(X_test)
+    score_test=accuracy_score(y_pred_test,y_test)
+    classifier_name = 'RandomForestClassifier'
+    classifiers_score[classifier_name] = score_train
     #Metrics
     matriz = confusion_matrix(y_train, y_pred_train )
     precision = precision_score(y_train, y_pred_train)
