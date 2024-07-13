@@ -125,6 +125,7 @@ def index():
     X_train,X_test,y_train,y_test=train_test_split(X_scaled,y,test_size=0.3,random_state=0)
 
     classifiers_score = {}
+    classifiers_precision = {}
     classifiers_recall = {}
     classifiers_f1 = {}
     ### Implement Classifier SVC
@@ -137,10 +138,13 @@ def index():
     classifier_name = 'SVC'
     classifiers_score[classifier_name] = score_train
     ### Metrics
+    precision = precision_score(y_train, y_pred_train)
     recall = recall_score(y_train, y_pred_train)
     f1 = f1_score(y_train, y_pred_train)
+    classifiers_precision[classifier_name] = precision
     classifiers_recall[classifier_name] = recall
     classifiers_f1[classifier_name] = f1
+    classifiers_f1[classifier_name+'_2'] = calculate_f1(precision, recall)
 
     ### Implement Classifier KNeighborsClassifier
     classifier= KNeighborsClassifier()
@@ -152,10 +156,13 @@ def index():
     classifier_name = 'KNeighborsClassifier'
     classifiers_score[classifier_name] = score_train
     ### Metrics
+    precision = precision_score(y_train, y_pred_train)
     recall = recall_score(y_train, y_pred_train)
     f1 = f1_score(y_train, y_pred_train)
+    classifiers_precision[classifier_name] = precision
     classifiers_recall[classifier_name] = recall
     classifiers_f1[classifier_name] = f1
+    classifiers_f1[classifier_name+'_2'] = calculate_f1(precision, recall)
 
     ### Implement Classifier LogisticRegression
     classifier=LogisticRegression()
@@ -167,10 +174,13 @@ def index():
     classifier_name = 'LogisticRegression'
     classifiers_score[classifier_name] = score_train
     ### Metrics
+    precision = precision_score(y_train, y_pred_train)
     recall = recall_score(y_train, y_pred_train)
     f1 = f1_score(y_train, y_pred_train)
+    classifiers_precision[classifier_name] = precision
     classifiers_recall[classifier_name] = recall
     classifiers_f1[classifier_name] = f1
+    classifiers_f1[classifier_name+'_2'] = calculate_f1(precision, recall)
 
     ### Implement Classifier DecisionTreeClassifier
     classifier= DecisionTreeClassifier()
@@ -182,10 +192,13 @@ def index():
     classifier_name = 'DecisionTreeClassifier'
     classifiers_score[classifier_name] = score_train
     ### Metrics
+    precision = precision_score(y_train, y_pred_train)
     recall = recall_score(y_train, y_pred_train)
     f1 = f1_score(y_train, y_pred_train)
+    classifiers_precision[classifier_name] = precision
     classifiers_recall[classifier_name] = recall
     classifiers_f1[classifier_name] = f1
+    classifiers_f1[classifier_name+'_2'] = calculate_f1(precision, recall)
 
     ### Implement Classifier RandomForestClassifier
     classifier=RandomForestClassifier()
@@ -193,7 +206,7 @@ def index():
     y_pred_train =classifier.predict(X_train)
 
     precision, recall, thresholds = precision_recall_curve(y_train, y_pred_train)
-    # Encontrar el umbral que te da el recall deseado
+    # Find umbral waited
     desired_recall = 0.90
     threshold_recall = thresholds[np.where(recall >= desired_recall)][0]
     y_pred_train_recall = (y_pred_train >= threshold_recall).astype(int)
@@ -207,10 +220,12 @@ def index():
     matriz = confusion_matrix(y_train, y_pred_train )
     precision = precision_score(y_train, y_pred_train)
     recall = recall_score(y_train, y_pred_train_recall)
-    f1 = f1_score(y_train, y_pred_train)
+    f1 = calculate_f1(precision, recall)
     auc = roc_auc_score(y_train, y_pred_train)
+    classifiers_precision[classifier_name] = precision
     classifiers_recall[classifier_name] = recall
-    classifiers_f1[classifier_name] = f1
+    classifiers_f1[classifier_name] = f1_score(y_train, y_pred_train)
+    classifiers_f1[classifier_name+'_2'] = f1
 
     '''### Create a Pickle file using serialization 
     pickle_out = open("classifier.pkl","wb")
@@ -223,6 +238,7 @@ def index():
         'f1': f1,
         'score_train': score_train, 
         'classifiers_score': classifiers_score,
+        'classifiers_precision': classifiers_precision,
         'classifiers_recall': classifiers_recall,
         'classifiers_f1': classifiers_f1,
         'auc': auc
@@ -395,3 +411,9 @@ def update_prediction_by_id(conn, cursor, id, outcome):
         print(f"Registro con id {id} actualizado exitosamente")
     except mysql.connector.Error as err:
         print("Error al actualizar el registro:", err)
+
+def calculate_f1(precision_param, recall_param):
+    divisor_plus = (precision_param+recall_param) 
+    divisor = divisor_plus if divisor_plus>0 else 1
+    dividendo = (2 * precision_param * recall_param)
+    return  dividendo/divisor
