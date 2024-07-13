@@ -9,9 +9,10 @@ from fastapi.responses import JSONResponse
 from Student import Student
 #import pickle
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import precision_recall_curve, accuracy_score, confusion_matrix, precision_score, recall_score, f1_score, roc_auc_score
 import csv
 import mysql.connector
 
@@ -190,6 +191,13 @@ def index():
     classifier=RandomForestClassifier()
     classifier.fit(X_train,y_train)
     y_pred_train =classifier.predict(X_train)
+
+    precision, recall, thresholds = precision_recall_curve(y_train, y_pred_train)
+    # Encontrar el umbral que te da el recall deseado
+    desired_recall = 0.90
+    threshold = thresholds[np.where(recall >= desired_recall)][0]
+    y_pred_train_recall = (y_pred_train >= threshold).astype(int)
+
     score_train=accuracy_score(y_pred_train ,y_train)
     y_pred_test=classifier.predict(X_test)
     score_test=accuracy_score(y_pred_test,y_test)
@@ -198,7 +206,7 @@ def index():
     #Metrics
     matriz = confusion_matrix(y_train, y_pred_train )
     precision = precision_score(y_train, y_pred_train)
-    recall = recall_score(y_train, y_pred_train)
+    recall = recall_score(y_train, y_pred_train_recall)
     f1 = f1_score(y_train, y_pred_train)
     auc = roc_auc_score(y_train, y_pred_train)
     classifiers_recall[classifier_name] = recall
