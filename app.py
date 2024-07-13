@@ -195,8 +195,8 @@ def index():
     precision, recall, thresholds = precision_recall_curve(y_train, y_pred_train)
     # Encontrar el umbral que te da el recall deseado
     desired_recall = 0.90
-    threshold = thresholds[np.where(recall >= desired_recall)][0]
-    y_pred_train_recall = (y_pred_train >= threshold).astype(int)
+    threshold_recall = thresholds[np.where(recall >= desired_recall)][0]
+    y_pred_train_recall = (y_pred_train >= threshold_recall).astype(int)
 
     score_train=accuracy_score(y_pred_train ,y_train)
     y_pred_test=classifier.predict(X_test)
@@ -289,13 +289,11 @@ def predict_dropout():
     X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=0)
 
     ### Implement Classifier
-    classifier=svm.SVC(kernel='linear')
+    classifier=RandomForestClassifier()
     classifier.fit(X_train,y_train)
-
     ### Check Accuracy on the training data
     y_pred=classifier.predict(X_train)
     score_train=accuracy_score(y_pred,y_train)
-
     ### Check Accuracy on the test data
     y_pred=classifier.predict(X_test)
     score_test=accuracy_score(y_pred,y_test)
@@ -330,9 +328,7 @@ def predict_dropout():
                          typeInstitution,provenanceLevel,disability,enrolledCycle,
                          repeatedCourses,languageLevel,computingLevel,isForeign])
 
-
-    predictions = classifier.predict(students)
-    
+    predictions = classifier.predict(students)    
     responseStudents = []
     for i, prediction in enumerate(predictions):
         students[i].append(int(prediction))
