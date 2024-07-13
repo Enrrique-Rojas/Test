@@ -314,7 +314,7 @@ def predict_dropout():
     y_pred=classifier.predict(X_test)
     score_test=accuracy_score(y_pred,y_test)
 
-    data = select_data_where_prediction_false(cursor)
+    data = select_data_where_prediction(cursor)
     if not data:
         response = {
         'sucess': False,
@@ -374,6 +374,36 @@ def predict_dropout():
 
     return response
 
+@app.post('/list')
+def list_students():
+    # Establecer la conexión
+    try:
+        conn = mysql.connector.connect(**config)
+        print("Conexión exitosa a MySQL")
+    except mysql.connector.Error as err:
+        print("Error de conexión:", err)
+
+    # Crear un cursor para ejecutar consultas
+    cursor = conn.cursor()
+    data = select_data_prediction(cursor)
+    if not data:
+        response = {
+        'sucess': False,
+        'message': "No existe datos"
+        }
+        cursor.close()
+        conn.close()
+        return response
+    else:
+        response = {
+        'sucess': True,
+        'message': "Lista de datos",
+        'result': data
+        }
+        cursor.close()
+        conn.close()
+        return response
+
 def append_data_to_csv(csv_file, new_data):
     with open(csv_file, 'a', newline='') as file:
         writer = csv.writer(file)
@@ -392,10 +422,20 @@ def insert_data(conn, cursor, data):
     except mysql.connector.Error as err:
         print("Error al insertar datos:", err)
 
-def select_data_where_prediction_false(cursor):
+def select_data_where_prediction(cursor):
     try:
         query = ("SELECT *"
         "FROM prediction WHERE prediction = FALSE")
+        cursor.execute(query)
+        results = cursor.fetchall()
+        return results
+    except mysql.connector.Error as err:
+        print("Error al obtener datos:", err)
+        return None
+
+def select_data_prediction(cursor):
+    try:
+        query = ("SELECT nameStudent,enrolledCycle,created_at,outcome FROM prediction ORDER BY created_at DESC")
         cursor.execute(query)
         results = cursor.fetchall()
         return results
