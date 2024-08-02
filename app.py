@@ -32,6 +32,35 @@ config = {
 
 app = FastAPI()
 
+@app.get('/ping_db')
+def ping_db():
+    import socket
+    try:
+        host_ip = socket.gethostbyname(config['host'])
+        return {
+            "success": True,
+            "message": f"Host IP: {host_ip}"
+        }
+    except socket.gaierror:
+        return {
+            "success": False,
+            "message": "No se puede resolver el host"
+        }
+
+@app.get('/test_connection')
+def test_connection():
+    try:
+        conn = mysql.connector.connect(**config)
+        return {
+            "success": True,
+            "message": "Conexión exitosa a MySQL desde Render"
+        }
+    except mysql.connector.Error as err:
+        return {
+            "success": False,
+            "message": f"Error de conexión: {err}"
+        }
+
 @app.post('/information')
 def get_information():
 
@@ -115,15 +144,11 @@ def get_information():
 @app.post('/')
 def index():
     df=pd.read_csv('Student.csv')
-
     X = df.drop(columns='outcome', axis=1)
     y = df['outcome']
-
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-
     X_train,X_test,y_train,y_test=train_test_split(X_scaled,y,test_size=0.3,random_state=0)
-
     classifiers_score = {}
     classifiers_precision = {}
     classifiers_recall = {}
@@ -145,7 +170,6 @@ def index():
     classifiers_recall[classifier_name] = recall
     classifiers_f1[classifier_name] = f1
     classifiers_f1[classifier_name+'_2'] = calculate_f1(precision, recall)
-
     ### Implement Classifier KNeighborsClassifier
     classifier= KNeighborsClassifier()
     classifier.fit(X_train,y_train)
@@ -163,7 +187,6 @@ def index():
     classifiers_recall[classifier_name] = recall
     classifiers_f1[classifier_name] = f1
     classifiers_f1[classifier_name+'_2'] = calculate_f1(precision, recall)
-
     ### Implement Classifier LogisticRegression
     classifier=LogisticRegression()
     classifier.fit(X_train,y_train)
@@ -220,17 +243,14 @@ def index():
     matriz = confusion_matrix(y_train, y_pred_train )
     precision = precision_score(y_train, y_pred_train)
     recall = recall_score(y_train, y_pred_train_recall)
+    f1_calculate = f1_score(y_train, y_pred_train)
     f1 = calculate_f1(precision, recall)
     auc = roc_auc_score(y_train, y_pred_train)
     classifiers_precision[classifier_name] = precision
     classifiers_recall[classifier_name] = recall
-    classifiers_f1[classifier_name] = f1_score(y_train, y_pred_train)
+    classifiers_f1[classifier_name] = f1_calculate
     classifiers_f1[classifier_name+'_2'] = f1
 
-    '''### Create a Pickle file using serialization 
-    pickle_out = open("classifier.pkl","wb")
-    pickle.dump(classifier, pickle_out)
-    pickle_out.close()''' 
     return JSONResponse(content={
         "confusion_matrix": matriz.tolist(),
         'precision' : precision,
@@ -251,6 +271,10 @@ def save(data: Student):
         print("Conexión exitosa a MySQL")
     except mysql.connector.Error as err:
         print("Error de conexión:", err)
+        return {
+            "sucess": False,
+            "message": "Error de conexión"
+        }
     cursor = conn.cursor()
     student_model = data.model_dump()
     name=student_model['name']
@@ -286,24 +310,21 @@ def predict_dropout():
         print("Conexión exitosa a MySQL")
     except mysql.connector.Error as err:
         print("Error de conexión:", err)
-
+        return {
+            "sucess": False,
+            "message": "Error de conexión"
+        }
     # Crear un cursor para ejecutar consultas
     cursor = conn.cursor()
-
     df=pd.read_csv('Student.csv')
-
     X = df.drop(columns='outcome', axis=1)
     y = df['outcome']
-
     scaler = StandardScaler()
     scaler.fit(X)
-
     standardized_data = scaler.transform(X)
     X = standardized_data
     y = df['outcome']
-
     X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=0)
-
     ### Implement Classifier
     classifier=RandomForestClassifier()
     classifier.fit(X_train,y_train)
@@ -313,7 +334,6 @@ def predict_dropout():
     ### Check Accuracy on the test data
     y_pred=classifier.predict(X_test)
     score_test=accuracy_score(y_pred,y_test)
-
     data = select_data_where_prediction(cursor)
     if not data:
         response = {
@@ -323,7 +343,6 @@ def predict_dropout():
         cursor.close()
         conn.close()
         return response
-    
     students = []
     for student in data:
         gender=student[2]
@@ -335,7 +354,6 @@ def predict_dropout():
         provenanceLevel=student[8]
         disability=student[9]
         enrolledCycle=student[10]
-
         repeatedCourses=student[11]
         languageLevel=student[12]
         computingLevel=student[13]
@@ -377,6 +395,10 @@ def list_students():
         print("Conexión exitosa a MySQL")
     except mysql.connector.Error as err:
         print("Error de conexión:", err)
+        return {
+            "sucess": False,
+            "message": "Error de conexión"
+        }
 
     # Crear un cursor para ejecutar consultas
     cursor = conn.cursor()
