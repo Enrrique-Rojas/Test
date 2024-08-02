@@ -22,6 +22,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import svm
 
+import socket
 # Configurar la conexión a la base de datos
 config = {
   'user': 'freedb_Enrrique',
@@ -31,6 +32,28 @@ config = {
 }
 
 app = FastAPI()
+
+def check_port(host, port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        result = sock.connect_ex((host, port))
+        if result == 0:
+            return True
+        else:
+            return False
+
+@app.get('/check_port')
+def check_mysql_port():
+    is_open = check_port(config['host'], 3306)
+    if is_open:
+        return {
+            "success": True,
+            "message": "El puerto 3306 está abierto"
+        }
+    else:
+        return {
+            "success": False,
+            "message": "El puerto 3306 está cerrado"
+        }
 
 @app.get('/ping_db')
 def ping_db():
