@@ -25,10 +25,10 @@ from sklearn import svm
 import socket
 # Configurar la conexión a la base de datos
 config = {
-  'user': 'freedb_Enrrique',
-  'password': 'MJCfD8mM&H2yvs!',
+  'user': 'freedb_Katherin',
+  'password': 'uD#M!FBzJCZ&e8f',
   'host': 'sql.freedb.tech',
-  'database': 'freedb_PredectionDesertion',
+  'database': 'freedb_PredectionDesertionBD',
 }
 
 app = FastAPI()
